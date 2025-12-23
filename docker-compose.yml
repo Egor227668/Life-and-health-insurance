@@ -1,23 +1,14 @@
-version: '3.8'
+version: '3.9'
 
 services:
   postgres:
-    image: postgres:15-alpine
-    container_name: insurance-db
+    image: postgres:latest
     environment:
-      POSTGRES_USER: insurance_user
-      POSTGRES_PASSWORD: insurance_password
-      POSTGRES_DB: insurance_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: main
     ports:
-      - "5432:5432"
+      - "5430:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - insurance-network
-
-volumes:
-  postgres_data:
-
-networks:
-  insurance-network:
-    driver: bridge
+      - /tmp/sql_dump:/docker-entrypoint-initdb.d
+    restart: always
