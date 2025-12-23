@@ -62,15 +62,26 @@ func CalculateCompensation(claimRepository *repository.InsuranceClaimRepository)
     }
 }
 
-
+// @title Insurance Karavaev API
+// @version 1.0
 func main() {
+    db, err := sqlx.Connect("postgres", "host=localhost port=5430 user=postgres dbname=main password=password sslmode=disable")
+    if err != nil {        
+        log.Fatalln(err)    
+    }
+
     policiesRepository:= repository.NewPolicyRepository(db)
+    policiesServices := service.NewPoliciesServices(policiesRepository)
+    policiesHandler := handler.NewPoliciesServices(servicesService) 
+
     insurance_claimRepository:= repository.NewInsuranceClaimRepository(db)
+    insurance_claimServices := service.NewInsuranceClaimService(insurance_claimRepository)    
+    insurance_claimHandler := handler.NewInsuranceClaimHandler(insurance_claimService)
     r := mux.NewRouter()
 
-    r.HandleFunc("/policies", CreatePolicy).Methods("POST")
-    r.HandleFunc("/claims", SubmitInsuranceClaim).Methods("POST")
-    r.HandleFunc("/calculate/{id}", CalculateCompensation).Methods("GET")
+    r.HandleFunc("/policies", policiesHandler.CreatePolicy).Methods("POST")
+    r.HandleFunc("/claims", insurance_claimHandler.SubmitInsuranceClaim).Methods("POST")
+    r.HandleFunc("/calculate/{id}", insurance_claimHandler.CalculateCompensation).Methods("GET")
 
 
     log.Fatal(http.ListenAndServe(":8080", r))
