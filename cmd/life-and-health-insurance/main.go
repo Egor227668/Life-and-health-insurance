@@ -3,7 +3,14 @@ package main
 import (
     "log"
     "net/http"
+    
     "github.com/gorilla/mux"
+    _ "life-and-health-insurance/docs"
+    httpSwagger "github.com/swaggo/http-swagger"
+    
+    "life-and-health-insurance/internal/app/repository"
+    "life-and-health-insurance/internal/app/service"
+    "life-and-health-insurance/internal/app/handler"
 )
 
 
